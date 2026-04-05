@@ -12,3 +12,4 @@ chroma_langchain_db/
 .claude
 __pycache__/
 *.pyc
+chroma_improved_db/
