@@ -1,15 +1,48 @@
+# OS
 .DS_Store
-.env
-/node_modules/
+Thumbs.db
+desktop.ini
 
-# React Router
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+
+# React Router / Vite
 /.react-router/
 /build/
+/.vite/
 
-venv
-*.pdf
-chroma_langchain_db/
-.claude
+# Python
+venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Vector DB
+chroma_langchain_db/
 chroma_improved_db/
+
+# Uploads / temp
+*.pdf
+*.tmp
+
+# Logs
+*.log
+
+# Claude Code
+.claude
