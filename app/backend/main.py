@@ -1,5 +1,6 @@
 # FastAPI PDF RAG (Retrieval-Augmented Generation) application
 # Run with: uvicorn app.backend.main:app --reload (development) or uvicorn app.backend.main:app (production)
+# uvicorn app.backend.main:app --reload --reload-dir app
 # Dependencies: pip install fastapi uvicorn python-dotenv
 # Environment: Create .env file with required API keys (e.g., OPENAI_API_KEY, PINECONE_API_KEY)
 
@@ -9,8 +10,9 @@ import tempfile
 from dotenv import load_dotenv; load_dotenv()
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from app.backend.schemas import SearchRequest, ChatRequest
 from app.backend.semantic_functions import load_and_split, index_documents, search, clear_collection
+from app.backend.chat import chat_with_docs
 
 app = FastAPI(title="PDF RAG API")
 
@@ -20,11 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-class SearchRequest(BaseModel):
-    query: str
-    k: int = 5
 
 
 @app.get("/health")
@@ -54,6 +51,16 @@ async def upload_pdf(file: UploadFile = File(...)):
 def delete_collection():
     deleted = clear_collection()
     return {"deleted_chunks": deleted}
+
+
+@app.post("/chat")
+def chat(req: ChatRequest):
+    result = chat_with_docs(query=req.query, k=req.k)
+    return {
+        "query": req.query,
+        "answer": result["answer"],
+        "sources": result["sources"],
+    }
 
 
 @app.post("/search")
